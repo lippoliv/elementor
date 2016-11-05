@@ -4,21 +4,15 @@ namespace Elementor;
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 class Elements_Manager {
-
 	/**
 	 * @var Element_Base[]
 	 */
-	protected $_register_elements = [];
+	private $_element_types = null;
 
-	public function init() {
-		include( ELEMENTOR_PATH . 'includes/elements/base.php' );
-		include( ELEMENTOR_PATH . 'includes/elements/column.php' );
-		include( ELEMENTOR_PATH . 'includes/elements/section.php' );
+	public function __construct() {
+		$this->require_files();
 
-		$this->register_element( __NAMESPACE__ . '\Element_Column' );
-		$this->register_element( __NAMESPACE__ . '\Element_Section' );
-
-		do_action( 'elementor/elements/elements_registered' );
+		add_action( 'wp_ajax_elementor_save_builder', [ $this, 'ajax_save_builder' ] );
 	}
 
 	public function get_categories() {
@@ -39,60 +33,63 @@ class Elements_Manager {
 		];
 	}
 
-	public function register_element( $element_class ) {
-		if ( ! class_exists( $element_class ) ) {
-			return new \WP_Error( 'element_class_name_not_exists' );
-		}
-
-		$element_instance = new $element_class();
-
-		if ( ! $element_instance instanceof Element_Base ) {
-			return new \WP_Error( 'wrong_instance_element' );
-		}
-
-		$this->_register_elements[ $element_instance->get_id() ] = $element_instance;
+	public function register_element_type( Element_Base $element ) {
+		$this->_element_types[ $element->get_name() ] = $element;
 
 		return true;
 	}
 
-	public function unregister_element( $id ) {
-		if ( ! isset( $this->_register_elements[ $id ] ) ) {
+	public function unregister_element_type( $name ) {
+		if ( ! isset( $this->_element_types[ $name ] ) ) {
 			return false;
 		}
-		unset( $this->_register_elements[ $id ] );
+
+		unset( $this->_element_types[ $name ] );
+
 		return true;
 	}
 
-	public function get_register_elements() {
-		return $this->_register_elements;
-	}
-
-	public function get_element( $id ) {
-		$elements = $this->get_register_elements();
-
-		if ( ! isset( $elements[ $id ] ) ) {
-			return false;
+	public function get_element_types( $element_name = null ) {
+		if ( is_null( $this->_element_types ) ) {
+			$this->_init_elements();
 		}
 
-		return $elements[ $id ];
-	}
-
-	public function get_register_elements_data() {
-		$data = [];
-		foreach ( $this->get_register_elements() as $element ) {
-			$data[ $element->get_id() ] = $element->get_data();
+		if ( $element_name ) {
+			return isset( $this->_element_types[ $element_name ] ) ? $this->_element_types[ $element_name ] : null;
 		}
 
-		return $data;
+		return $this->_element_types;
+	}
+
+	public function get_element_types_config() {
+		$config = [];
+
+		foreach ( $this->get_element_types() as $element ) {
+			$config[ $element->get_name() ] = $element->get_config();
+		}
+
+		return $config;
 	}
 
 	public function render_elements_content() {
-		foreach ( $this->get_register_elements() as $element ) {
-			$element->print_template();
+		foreach ( $this->get_element_types() as $element_type ) {
+			$element_type->print_template();
 		}
 	}
 
 	public function ajax_save_builder() {
+		if ( empty( $_POST['_nonce'] ) || ! wp_verify_nonce( $_POST['_nonce'], 'elementor-editing' ) ) {
+			wp_send_json_error( new \WP_Error( 'token_expired' ) );
+		}
+
+		if ( empty( $_POST['post_id'] ) ) {
+			wp_send_json_error( new \WP_Error( 'no_post_id' ) );
+		}
+
+		if ( ! User::is_current_user_can_edit( $_POST['post_id'] ) ) {
+			wp_send_json_error( new \WP_Error( 'no_access' ) );
+		}
+
 		if ( isset( $_POST['revision'] ) && DB::REVISION_PUBLISH === $_POST['revision'] ) {
 			$revision = DB::REVISION_PUBLISH;
 		} else {
@@ -100,13 +97,27 @@ class Elements_Manager {
 		}
 		$posted = json_decode( stripslashes( html_entity_decode( $_POST['data'] ) ), true );
 
-		Plugin::instance()->db->save_builder( $_POST['post_id'], $posted, $revision );
-		die;
+		Plugin::instance()->db->save_editor( $_POST['post_id'], $posted, $revision );
+
+		wp_send_json_success();
 	}
 
-	public function __construct() {
-		add_action( 'init', [ $this, 'init' ] );
+	private function _init_elements() {
+		$this->_element_types = [];
 
-		add_action( 'wp_ajax_elementor_save_builder', [ $this, 'ajax_save_builder' ] );
+		foreach ( [ 'section', 'column' ] as $element_name ) {
+			$class_name = __NAMESPACE__ . '\Element_' . $element_name;
+
+			$this->register_element_type( new $class_name() );
+		}
+
+		do_action( 'elementor/elements/elements_registered' );
+	}
+
+	private function require_files() {
+		require_once ELEMENTOR_PATH . 'includes/base/element-base.php';
+
+		require ELEMENTOR_PATH . 'includes/elements/column.php';
+		require ELEMENTOR_PATH . 'includes/elements/section.php';
 	}
 }

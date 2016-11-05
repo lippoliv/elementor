@@ -1,6 +1,7 @@
 <?php
 namespace Elementor\System_Info\Classes;
 
+use Elementor\Api;
 use Elementor\System_Info\Classes\Abstracts\Base_Reporter;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
@@ -8,18 +9,19 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 class Server_Reporter extends Base_Reporter {
 
 	public function get_title() {
-		return _x( 'Server Environment', 'System Info', 'elementor' );
+		return 'Server Environment';
 	}
 
 	public function get_fields() {
 		return [
-			'os' => _x( 'Operating System', 'System Info', 'elementor' ),
-			'software' => _x( 'Software', 'System Info', 'elementor' ),
-			'mysql_version' => _x( 'MySQL version', 'System Info', 'elementor' ),
-			'php_version' => _x( 'PHP Version', 'System Info', 'elementor' ),
-			'php_max_input_vars' => _x( 'PHP Max Input Vars', 'System Info', 'elementor' ),
-			'php_max_post_size' => _x( 'PHP Max Post Size', 'System Info', 'elementor' ),
-			'gd_installed' => _x( 'GD Installed', 'System Info', 'elementor' ),
+			'os' => 'Operating System',
+			'software' => 'Software',
+			'mysql_version' => 'MySQL version',
+			'php_version' => 'PHP Version',
+			'php_max_input_vars' => 'PHP Max Input Vars',
+			'php_max_post_size' => 'PHP Max Post Size',
+			'gd_installed' => 'GD Installed',
+			'elementor_library' => 'Elementor Library',
 		];
 	}
 
@@ -70,6 +72,43 @@ class Server_Reporter extends Base_Reporter {
 
 		return [
 			'value' => $wpdb->db_version(),
+		];
+	}
+
+	public function get_elementor_library() {
+		$response = wp_remote_post( Api::$api_info_url, [
+			'timeout' => 25,
+			'body' => [
+				// Which API version is used
+				'api_version' => ELEMENTOR_VERSION,
+				// Which language to return
+				'site_lang' => get_bloginfo( 'language' ),
+			],
+		] );
+
+		if ( is_wp_error( $response ) ) {
+			return [
+				'value' => 'not connected (' . $response->get_error_message() . ')',
+			];
+		}
+
+		$http_response_code = wp_remote_retrieve_response_code( $response );
+		if ( 200 !== (int) $http_response_code ) {
+			$error_msg = 'HTTP Error (' . $http_response_code . ')';
+			return [
+				'value' => 'not connected (' . $error_msg . ')',
+			];
+		}
+
+		$info_data = json_decode( wp_remote_retrieve_body( $response ), true );
+		if ( empty( $info_data ) ) {
+			return [
+				'value' => 'not connected (Return invalid JSON)',
+			];
+		}
+
+		return [
+			'value' => 'connected',
 		];
 	}
 }

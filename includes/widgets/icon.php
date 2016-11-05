@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 class Widget_Icon extends Widget_Base {
 
-	public function get_id() {
+	public function get_name() {
 		return 'icon';
 	}
 
@@ -18,11 +18,10 @@ class Widget_Icon extends Widget_Base {
 	}
 
 	protected function _register_controls() {
-		$this->add_control(
+		$this->start_controls_section(
 			'section_icon',
 			[
 				'label' => __( 'Icon', 'elementor' ),
-				'type' => Controls_Manager::SECTION,
 			]
 		);
 
@@ -31,7 +30,6 @@ class Widget_Icon extends Widget_Base {
 			[
 				'label' => __( 'View', 'elementor' ),
 				'type' => Controls_Manager::SELECT,
-				'section' => 'section_icon',
 				'options' => [
 					'default' => __( 'Default', 'elementor' ),
 					'stacked' => __( 'Stacked', 'elementor' ),
@@ -48,8 +46,7 @@ class Widget_Icon extends Widget_Base {
 				'label' => __( 'Icon', 'elementor' ),
 				'type' => Controls_Manager::ICON,
 				'label_block' => true,
-				'default' => 'fa fa-bullhorn',
-				'section' => 'section_icon',
+				'default' => 'fa fa-star',
 			]
 		);
 
@@ -58,7 +55,6 @@ class Widget_Icon extends Widget_Base {
 			[
 				'label' => __( 'Shape', 'elementor' ),
 				'type' => Controls_Manager::SELECT,
-				'section' => 'section_icon',
 				'options' => [
 					'circle' => __( 'Circle', 'elementor' ),
 					'square' => __( 'Square', 'elementor' ),
@@ -77,16 +73,14 @@ class Widget_Icon extends Widget_Base {
 				'label' => __( 'Link', 'elementor' ),
 				'type' => Controls_Manager::URL,
 				'placeholder' => 'http://your-link.com',
-				'section' => 'section_icon',
 			]
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'align',
 			[
 				'label' => __( 'Alignment', 'elementor' ),
 				'type' => Controls_Manager::CHOOSE,
-				'section' => 'section_icon',
 				'options' => [
 					'left'    => [
 						'title' => __( 'Left', 'elementor' ),
@@ -102,16 +96,19 @@ class Widget_Icon extends Widget_Base {
 					],
 				],
 				'default' => 'center',
-				'prefix_class' => 'elementor-align-',
+				'selectors' => [
+					'{{WRAPPER}} .elementor-icon-wrapper' => 'text-align: {{VALUE}};',
+				],
 			]
 		);
 
-		$this->add_control(
+		$this->end_controls_section();
+
+		$this->start_controls_section(
 			'section_style_icon',
 			[
 				'label' => __( 'Icon', 'elementor' ),
-				'type' => Controls_Manager::SECTION,
-				'tab' => self::TAB_STYLE,
+				'tab' => Controls_Manager::TAB_STYLE,
 			]
 		);
 
@@ -120,14 +117,11 @@ class Widget_Icon extends Widget_Base {
 			[
 				'label' => __( 'Primary Color', 'elementor' ),
 				'type' => Controls_Manager::COLOR,
-				'tab' => self::TAB_STYLE,
-				'section' => 'section_style_icon',
 				'default' => '',
 				'selectors' => [
 					'{{WRAPPER}}.elementor-view-stacked .elementor-icon' => 'background-color: {{VALUE}};',
 					'{{WRAPPER}}.elementor-view-framed .elementor-icon, {{WRAPPER}}.elementor-view-default .elementor-icon' => 'color: {{VALUE}}; border-color: {{VALUE}};',
 				],
-				'alpha' => true,
 				'scheme' => [
 					'type' => Scheme_Color::get_type(),
 					'value' => Scheme_Color::COLOR_1,
@@ -140,8 +134,6 @@ class Widget_Icon extends Widget_Base {
 			[
 				'label' => __( 'Secondary Color', 'elementor' ),
 				'type' => Controls_Manager::COLOR,
-				'tab' => self::TAB_STYLE,
-				'section' => 'section_style_icon',
 				'default' => '',
 				'condition' => [
 					'view!' => 'default',
@@ -149,11 +141,6 @@ class Widget_Icon extends Widget_Base {
 				'selectors' => [
 					'{{WRAPPER}}.elementor-view-framed .elementor-icon' => 'background-color: {{VALUE}};',
 					'{{WRAPPER}}.elementor-view-stacked .elementor-icon' => 'color: {{VALUE}};',
-				],
-				'alpha' => true,
-				'scheme' => [
-					'type' => Scheme_Color::get_type(),
-					'value' => Scheme_Color::COLOR_2,
 				],
 			]
 		);
@@ -163,19 +150,14 @@ class Widget_Icon extends Widget_Base {
 			[
 				'label' => __( 'Icon Size', 'elementor' ),
 				'type' => Controls_Manager::SLIDER,
-				'default' => [
-					'size' => 50,
-				],
 				'range' => [
 					'px' => [
 						'min' => 6,
 						'max' => 300,
 					],
 				],
-				'tab' => self::TAB_STYLE,
-				'section' => 'section_style_icon',
 				'selectors' => [
-					'{{WRAPPER}} .elementor-icon i' => 'font-size: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .elementor-icon' => 'font-size: {{SIZE}}{{UNIT}};',
 				],
 			]
 		);
@@ -185,18 +167,13 @@ class Widget_Icon extends Widget_Base {
 			[
 				'label' => __( 'Icon Padding', 'elementor' ),
 				'type' => Controls_Manager::SLIDER,
-				'tab' => self::TAB_STYLE,
-				'section' => 'section_style_icon',
 				'selectors' => [
 					'{{WRAPPER}} .elementor-icon' => 'padding: {{SIZE}}{{UNIT}};',
-				],
-				'default' => [
-					'size' => 1.5,
-					'unit' => 'em',
 				],
 				'range' => [
 					'em' => [
 						'min' => 0,
+						'max' => 5,
 					],
 				],
 				'condition' => [
@@ -214,8 +191,6 @@ class Widget_Icon extends Widget_Base {
 					'size' => 0,
 					'unit' => 'deg',
 				],
-				'tab' => self::TAB_STYLE,
-				'section' => 'section_style_icon',
 				'selectors' => [
 					'{{WRAPPER}} .elementor-icon i' => 'transform: rotate({{SIZE}}{{UNIT}});',
 				],
@@ -227,8 +202,6 @@ class Widget_Icon extends Widget_Base {
 			[
 				'label' => __( 'Border Width', 'elementor' ),
 				'type' => Controls_Manager::DIMENSIONS,
-				'tab' => self::TAB_STYLE,
-				'section' => 'section_style_icon',
 				'selectors' => [
 					'{{WRAPPER}} .elementor-icon' => 'border-width: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
@@ -238,32 +211,12 @@ class Widget_Icon extends Widget_Base {
 			]
 		);
 
-		/* TEMP - border color come from primary color
-		$this->add_control(
-			'border_color',
-			[
-				'label' => __( 'Border Color', 'elementor' ),
-				'type' => Controls_Manager::COLOR,
-				'tab' => self::TAB_STYLE,
-				'section' => 'section_style_icon',
-				'selectors' => [
-					'{{WRAPPER}} .elementor-icon' => 'border-color: {{VALUE}};',
-				],
-				'condition' => [
-					'view' => 'framed',
-				],
-			]
-		);
-		*/
-
 		$this->add_control(
 			'border_radius',
 			[
 				'label' => __( 'Border Radius', 'elementor' ),
 				'type' => Controls_Manager::DIMENSIONS,
 				'size_units' => [ 'px', '%' ],
-				'tab' => self::TAB_STYLE,
-				'section' => 'section_style_icon',
 				'selectors' => [
 					'{{WRAPPER}} .elementor-icon' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
@@ -273,12 +226,13 @@ class Widget_Icon extends Widget_Base {
 			]
 		);
 
-		$this->add_control(
+		$this->end_controls_section();
+
+		$this->start_controls_section(
 			'section_hover',
 			[
 				'label' => __( 'Icon Hover', 'elementor' ),
-				'type' => Controls_Manager::SECTION,
-				'tab' => self::TAB_STYLE,
+				'tab' => Controls_Manager::TAB_STYLE,
 			]
 		);
 
@@ -287,8 +241,6 @@ class Widget_Icon extends Widget_Base {
 			[
 				'label' => __( 'Primary Color', 'elementor' ),
 				'type' => Controls_Manager::COLOR,
-				'tab' => self::TAB_STYLE,
-				'section' => 'section_hover',
 				'default' => '',
 				'selectors' => [
 					'{{WRAPPER}}.elementor-view-stacked .elementor-icon:hover' => 'background-color: {{VALUE}};',
@@ -302,8 +254,6 @@ class Widget_Icon extends Widget_Base {
 			[
 				'label' => __( 'Secondary Color', 'elementor' ),
 				'type' => Controls_Manager::COLOR,
-				'tab' => self::TAB_STYLE,
-				'section' => 'section_hover',
 				'default' => '',
 				'condition' => [
 					'view!' => 'default',
@@ -314,57 +264,61 @@ class Widget_Icon extends Widget_Base {
 				],
 			]
 		);
+
+		$this->add_control(
+			'hover_animation',
+			[
+				'label' => __( 'Animation', 'elementor' ),
+				'type' => Controls_Manager::HOVER_ANIMATION,
+			]
+		);
+
+		$this->end_controls_section();
 	}
 
-	protected function render( $instance = [] ) {
+	protected function render() {
+		$settings = $this->get_settings();
+
 		$this->add_render_attribute( 'wrapper', 'class', 'elementor-icon-wrapper' );
 
 		$this->add_render_attribute( 'icon-wrapper', 'class', 'elementor-icon' );
 
-		if ( ! empty( $instance['icon'] ) ) {
-			$this->add_render_attribute( 'icon', 'class', $instance['icon'] );
+		if ( ! empty( $settings['hover_animation'] ) ) {
+			$this->add_render_attribute( 'icon-wrapper', 'class', 'elementor-animation-' . $settings['hover_animation'] );
 		}
 
-		if ( ! empty( $instance['link']['url'] ) ) {
-			$this->add_render_attribute( 'link', 'href', $instance['link']['url'] );
+		$icon_tag = 'div';
 
-			if ( ! empty( $instance['link']['is_external'] ) ) {
-				$this->add_render_attribute( 'link', 'target', '_blank' );
+		if ( ! empty( $settings['link']['url'] ) ) {
+			$this->add_render_attribute( 'icon-wrapper', 'href', $settings['link']['url'] );
+			$icon_tag = 'a';
+
+			if ( ! empty( $settings['link']['is_external'] ) ) {
+				$this->add_render_attribute( 'icon-wrapper', 'target', '_blank' );
 			}
 		}
+
+		if ( ! empty( $settings['icon'] ) ) {
+			$this->add_render_attribute( 'icon', 'class', $settings['icon'] );
+		}
+
 		?>
 		<div <?php echo $this->get_render_attribute_string( 'wrapper' ); ?>>
-			<?php if ( ! empty( $instance['icon'] ) ) : ?>
-				<?php if ( ! empty( $instance['link']['url'] ) ) : ?>
-					<a <?php echo $this->get_render_attribute_string( 'link' ); ?>>
-				<?php endif;?>
-					<div <?php echo $this->get_render_attribute_string( 'icon-wrapper' ); ?>>
-						<i <?php echo $this->get_render_attribute_string( 'icon' ); ?>></i>
-					</div>
-				<?php if ( ! empty( $instance['link']['url'] ) ) : ?>
-					</a>
-				<?php endif; ?>
-			<?php endif; ?>
+			<<?php echo $icon_tag . ' ' . $this->get_render_attribute_string( 'icon-wrapper' ); ?>>
+				<i <?php echo $this->get_render_attribute_string( 'icon' ); ?>></i>
+			</<?php echo $icon_tag; ?>>
 		</div>
 		<?php
 	}
 
-	protected function content_template() {
+	protected function _content_template() {
 		?>
+		<# var link = settings.link.url ? 'href="' + settings.link.url + '"' : '',
+				iconTag = link ? 'a' : 'div'; #>
 		<div class="elementor-icon-wrapper">
-			<% if ( settings.icon ) {
-			var hasLink = settings.link && settings.link.url;
-			%>
-			<% if ( hasLink ) { %>
-			<a class="elementor-icon-link" href="<%- settings.link.url %>">
-				<% } %>
-				<div class="elementor-icon">
-					<i class="<%- settings.icon %>"></i>
-				</div>
-				<% if ( hasLink ) { %>
-			</a>
-			<% } %>
-			<% } %>
+			<{{{ iconTag }}} class="elementor-icon elementor-animation-{{ settings.hover_animation }}" {{{ link }}}>
+				<i class="{{ settings.icon }}"></i>
+			</{{{ iconTag }}}>
 		</div>
 		<?php
 	}

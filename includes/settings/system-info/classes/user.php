@@ -8,13 +8,27 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 class User_Reporter extends Base_Reporter {
 
 	public function get_title() {
-		return _x( 'User', 'System Info', 'elementor' );
+		return 'User';
 	}
 
 	public function get_fields() {
 		return [
-			'locale' => _x( 'WP Profile lang', 'System Info', 'elementor' ),
-			'agent' => _x( 'User Agent', 'System Info', 'elementor' ),
+			'role' => 'Role',
+			'locale' => 'WP Profile lang',
+			'agent' => 'User Agent',
+		];
+	}
+
+	public function get_role() {
+		$role = null;
+
+		$current_user = wp_get_current_user();
+		if ( ! empty( $current_user->roles ) ) {
+			$role = $current_user->roles[0];
+		}
+
+		return [
+			'value' => $role,
 		];
 	}
 

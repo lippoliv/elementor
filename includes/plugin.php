@@ -51,6 +51,7 @@ class Plugin {
 	public static function instance() {
 		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
+			do_action( 'elementor/loaded' );
 		}
 		return self::$_instance;
 	}
@@ -64,14 +65,18 @@ class Plugin {
 		foreach ( $cpt_support as $cpt_slug ) {
 			add_post_type_support( $cpt_slug, 'elementor' );
 		}
+
+		do_action( 'elementor/init' );
 	}
 
 	private function _includes() {
 		include( ELEMENTOR_PATH . 'includes/maintenance.php' );
 		include( ELEMENTOR_PATH . 'includes/upgrades.php' );
+		include( ELEMENTOR_PATH . 'includes/api.php' );
 		include( ELEMENTOR_PATH . 'includes/utils.php' );
 		include( ELEMENTOR_PATH . 'includes/user.php' );
 		include( ELEMENTOR_PATH . 'includes/fonts.php' );
+		include( ELEMENTOR_PATH . 'includes/compatibility.php' );
 
 		include( ELEMENTOR_PATH . 'includes/db.php' );
 		include( ELEMENTOR_PATH . 'includes/controls-manager.php' );
@@ -83,12 +88,19 @@ class Plugin {
 		include( ELEMENTOR_PATH . 'includes/preview.php' );
 		include( ELEMENTOR_PATH . 'includes/frontend.php' );
 		include( ELEMENTOR_PATH . 'includes/heartbeat.php' );
+		include( ELEMENTOR_PATH . 'includes/responsive.php' );
+		include( ELEMENTOR_PATH . 'includes/stylesheet.php' );
 
 		include( ELEMENTOR_PATH . 'includes/settings/system-info/main.php' );
 		include( ELEMENTOR_PATH . 'includes/tracker.php' );
+		include( ELEMENTOR_PATH . 'includes/template-library/manager.php' );
 
 		if ( is_admin() ) {
 			include( ELEMENTOR_PATH . 'includes/admin.php' );
+
+			if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+				include( ELEMENTOR_PATH . 'includes/image-manager.php' );
+			}
 		}
 	}
 
@@ -116,6 +128,7 @@ class Plugin {
 		$heartbeat = new Heartbeat();
 
 		$this->system_info = new System_Info\Main();
+		$this->templates_manager = new TemplateLibrary\Manager();
 
 		if ( is_admin() ) {
 			new Admin();
