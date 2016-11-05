@@ -46,7 +46,7 @@ if ( ! version_compare( PHP_VERSION, '5.4', '>=' ) ) {
  * @return void
  */
 function elementor_load_plugin_textdomain() {
-	load_plugin_textdomain( 'elementor', false, dirname( plugin_basename( __FILE__ ) ).'/languages/' );
+	load_plugin_textdomain( 'elementor' );
 }
 
 /**
