@@ -3,6 +3,16 @@ namespace Elementor;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
+/**
+ * A Font Icon select box.
+ *
+ * @property array $icons   A list of font-icon classes. [ 'class-name' => 'nicename', ... ]
+ *                          Default Font Awesome icons. @see Control_Icon::get_icons().
+ * @property array $include list of classes to include form the $icons property
+ * @property array $exclude list of classes to exclude form the $icons property
+ *
+ * @since 1.0.0
+ */
 class Control_Icon extends Control_Base {
 
 	public function get_type() {

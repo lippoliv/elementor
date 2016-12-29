@@ -3,6 +3,18 @@ namespace Elementor;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
+/**
+ * A Select box control based on select2 jQuery plugin @see https://select2.github.io/ .
+ *
+ * @param string|array $default  The selected option key, or an array of selected values if multiple == true
+ *                               Default empty
+ * @param array        $options  Array of of key & value pairs: `[ 'key' => 'value', ... ]`
+ *                               Default empty
+ * @param bool         $multiple Whether to allow multi choices
+ *                               Default false
+ *
+ * @since 1.0.0
+ */
 class Control_Select2 extends Control_Base {
 
 	public function get_type() {
@@ -26,7 +38,8 @@ class Control_Select2 extends Control_Base {
 						var value = data.controlValue;
 						if ( typeof value == 'string' ) {
 							var selected = ( option_value === value ) ? 'selected' : '';
-						} else {
+						} else if ( null !== value ) {
+							var value = _.values( value );
 							var selected = ( -1 !== value.indexOf( option_value ) ) ? 'selected' : '';
 						}
 						#>

@@ -11,6 +11,12 @@ EditorCompositeView = Marionette.CompositeView.extend( {
 		};
 	},
 
+	behaviors: {
+		HandleInnerTabs: {
+			behaviorClass: require( 'elementor-behaviors/inner-tabs' )
+		}
+	},
+
 	childViewContainer: '#elementor-controls',
 
 	modelEvents: {
@@ -18,7 +24,7 @@ EditorCompositeView = Marionette.CompositeView.extend( {
 	},
 
 	ui: {
-		tabs: '.elementor-tabs-controls li',
+		tabs: '.elementor-panel-navigation-tab',
 		reloadButton: '#elementor-update-preview-button'
 	},
 
@@ -45,25 +51,30 @@ EditorCompositeView = Marionette.CompositeView.extend( {
 	},
 
 	onDestroy: function() {
-		this.getOption( 'editedElementView' ).$el.removeClass( 'elementor-element-editable' );
+		if ( this.editedElementView ) {
+			this.editedElementView.$el.removeClass( 'elementor-element-editable' );
+		}
+
 		this.model.trigger( 'editor:close' );
 
 		this.triggerMethod( 'editor:destroy' );
 	},
 
 	onBeforeRender: function() {
-		var controls = elementor.getElementControls( this.model.get( 'settings' ) );
+		var controls = elementor.getElementControls( this.model );
 
 		if ( ! controls ) {
 			throw new Error( 'Editor controls not found' );
 		}
 
 		// Create new instance of that collection
-		this.collection = new Backbone.Collection( controls );
+		this.collection = new Backbone.Collection( _.values( controls ) );
 	},
 
 	onRender: function() {
-		this.getOption( 'editedElementView' ).$el.addClass( 'elementor-element-editable' );
+		if ( this.editedElementView ) {
+			this.editedElementView.$el.addClass( 'elementor-element-editable' );
+		}
 
 		// Set the first tab as active
 		this.ui.tabs.eq( 0 ).find( 'a' ).trigger( 'click' );
@@ -96,7 +107,8 @@ EditorCompositeView = Marionette.CompositeView.extend( {
 		var $thisTab = this.$( event.target );
 
 		this.ui.tabs.removeClass( 'active' );
-		$thisTab.closest( 'li' ).addClass( 'active' );
+
+		$thisTab.closest( '.elementor-panel-navigation-tab' ).addClass( 'active' );
 
 		this.model.get( 'settings' ).trigger( 'control:switch:tab', $thisTab.data( 'tab' ) );
 

@@ -1,7 +1,6 @@
 var BaseSettingsModel = require( 'elementor-models/base-settings' ),
 	WidgetSettingsModel = require( 'elementor-models/widget-settings' ),
 	ColumnSettingsModel = require( 'elementor-models/column-settings' ),
-	RowSettingsModel = require( 'elementor-models/row-settings' ),
 	SectionSettingsModel = require( 'elementor-models/section-settings' ),
 
 	ElementModel,
@@ -22,37 +21,14 @@ ElementModel = Backbone.Model.extend( {
 	renderOnLeave: false,
 
 	initialize: function( options ) {
-		var elements = this.get( 'elements' ),
-			elType = this.get( 'elType' ),
-			settings;
-
-		var settingModels = {
-			widget: WidgetSettingsModel,
-			column: ColumnSettingsModel,
-			row: RowSettingsModel,
-			section: SectionSettingsModel
-		};
-
-		var SettingsModel = settingModels[ elType ] || BaseSettingsModel;
-
-		settings = this.get( 'settings' ) || {};
-		if ( 'widget' === elType ) {
-			settings.widgetType = this.get( 'widgetType' );
-		}
-
-		settings.elType = elType;
-		settings.isInner = this.get( 'isInner' );
-
-		settings = new SettingsModel( settings );
-		this.set( 'settings', settings );
-
-		this.initEditSettings();
+		var elType = this.get( 'elType' ),
+			elements = this.get( 'elements' );
 
 		if ( undefined !== elements ) {
 			this.set( 'elements', new ElementCollection( elements ) );
 		}
 
-		if ( 'widget' === this.get( 'elType' ) ) {
+		if ( 'widget' === elType ) {
 			this.remoteRender = true;
 			this.setHtmlCache( options.htmlCache || '' );
 		}
@@ -63,8 +39,37 @@ ElementModel = Backbone.Model.extend( {
 		// Make call to remote server as throttle function
 		this.renderRemoteServer = _.throttle( this.renderRemoteServer, 1000 );
 
-		this.on( 'destroy', this.onDestroy );
-		this.on( 'editor:close', this.onCloseEditor );
+		this.initSettings();
+
+		this.initEditSettings();
+
+		this.on( {
+			destroy: this.onDestroy,
+			'editor:close': this.onCloseEditor
+		} );
+	},
+
+	initSettings: function() {
+		var elType = this.get( 'elType' ),
+			settingModels = {
+				widget: WidgetSettingsModel,
+				column: ColumnSettingsModel,
+				section: SectionSettingsModel
+			};
+
+		var SettingsModel = settingModels[ elType ] || BaseSettingsModel,
+			settings = this.get( 'settings' ) || {};
+
+		if ( 'widget' === elType ) {
+			settings.widgetType = this.get( 'widgetType' );
+		}
+
+		settings.elType = elType;
+		settings.isInner = this.get( 'isInner' );
+
+		settings = new SettingsModel( settings );
+
+		this.set( 'settings', settings );
 	},
 
 	initEditSettings: function() {
@@ -81,7 +86,10 @@ ElementModel = Backbone.Model.extend( {
 				model.destroy();
 			} );
 		}
-		settings.destroy();
+
+		if ( settings instanceof BaseSettingsModel ) {
+			settings.destroy();
+		}
 	},
 
 	onCloseEditor: function() {
@@ -138,6 +146,19 @@ ElementModel = Backbone.Model.extend( {
 		return ( elementData ) ? elementData.icon : 'unknown';
 	},
 
+	getRemoteRenderRequest: function() {
+		var data = this.toJSON();
+
+		return elementor.ajax.send( 'render_widget', {
+			data: {
+				post_id: elementor.config.post_id,
+				data: JSON.stringify( data ),
+				_nonce: elementor.config.nonce
+			},
+			success: _.bind( this.onRemoteGetHtml, this )
+		} );
+	},
+
 	renderRemoteServer: function() {
 		if ( ! this.remoteRender ) {
 			return;
@@ -151,16 +172,7 @@ ElementModel = Backbone.Model.extend( {
 			this._jqueryXhr.abort();
 		}
 
-		var data = this.toJSON();
-
-		this._jqueryXhr = elementor.ajax.send( 'render_widget', {
-			data: {
-				post_id: elementor.config.post_id,
-				data: JSON.stringify( data ),
-				_nonce: elementor.config.nonce
-			},
-			success: _.bind( this.onRemoteGetHtml, this )
-		} );
+		this._jqueryXhr = this.getRemoteRenderRequest();
 	},
 
 	onRemoteGetHtml: function( data ) {
@@ -181,7 +193,9 @@ ElementModel = Backbone.Model.extend( {
 			newModel.set( 'elements', elements.clone() );
 		}
 
-		newModel.set( 'settings', settings.clone() );
+		if ( settings instanceof BaseSettingsModel ) {
+			newModel.set( 'settings', settings.clone() );
+		}
 
 		return newModel;
 	},
@@ -219,10 +233,13 @@ ElementCollection = Backbone.Collection.extend( {
 	},
 
 	model: function( attrs, options ) {
+		var ModelClass = Backbone.Model;
+
 		if ( attrs.elType ) {
-			return new ElementModel( attrs, options );
+			ModelClass = elementor.hooks.applyFilters( 'element/model', ElementModel, attrs );
 		}
-		return new Backbone.Model( attrs, options );
+
+		return new ModelClass( attrs, options );
 	},
 
 	clone: function() {

@@ -3,6 +3,16 @@ namespace Elementor;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
+/**
+ * A Media Chooser control. Based on the WordPress media library
+ *
+ * @param array  $default {
+ * 		@type string  $url   Default empty
+ * 		@type integer $id    Default empty
+ * }
+ *
+ * @since 1.0.0
+ */
 class Control_Media extends Control_Base_Multiple {
 
 	public function get_type() {
@@ -14,6 +24,30 @@ class Control_Media extends Control_Base_Multiple {
 			'url' => '',
 			'id' => '',
 		];
+	}
+
+	/**
+	 * Fetch images and replace to new
+	 *
+	 * @param $settings
+	 *
+	 * @return array|bool
+	 */
+	public function on_import( $settings ) {
+		if ( empty( $settings['url'] ) ) {
+			return $settings;
+		}
+
+		$settings = Plugin::instance()->templates_manager->get_import_images_instance()->import( $settings );
+
+		if ( ! $settings ) {
+			$settings = [
+				'id' => '',
+				'url' => Utils::get_placeholder_image_src(),
+			];
+		}
+
+		return $settings;
 	}
 
 	public function enqueue() {

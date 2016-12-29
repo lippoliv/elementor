@@ -11,7 +11,9 @@
 				$switchModeInput: $( '#elementor-switch-mode-input' ),
 				$switchModeButton: $( '#elementor-switch-mode-button' ),
 				$elementorLoader: $( '.elementor-loader' ),
-				$builderEditor: $( '#elementor-editor' )
+				$builderEditor: $( '#elementor-editor' ),
+				$importButton: $( '#elementor-import-template-trigger' ),
+				$importArea: $( '#elementor-import-template-area' )
 			};
 		},
 
@@ -66,6 +68,21 @@
 				} );
 			} );
 
+			$( '#elementor-clear-cache-button' ).on( 'click', function( event ) {
+				event.preventDefault();
+				var $thisButton = $( this );
+
+				$thisButton.removeClass( 'success' ).addClass( 'loading' );
+
+				$.post( ajaxurl, {
+					action: 'elementor_clear_cache',
+					_nonce: $thisButton.data( 'nonce' )
+				} )
+					.done( function() {
+						$thisButton.removeClass( 'loading' ).addClass( 'success' );
+					} );
+			} );
+
 			$( '#elementor-library-sync-button' ).on( 'click', function( event ) {
 				event.preventDefault();
 				var $thisButton = $( this );
@@ -95,17 +112,17 @@
 			}
 
 			var self = this,
-				$importButton = self.cache.$importButton = $( '#elementor-import-template-trigger' ),
-				$importArea = self.cache.$importArea = $( '#elementor-import-template-area' );
+				$importButton = self.cache.$importButton,
+				$importArea = self.cache.$importArea;
 
 			self.cache.$formAnchor = $( 'h1' );
 
 			$( '#wpbody-content' ).find( '.page-title-action' ).after( $importButton );
 
-			self.cache.$formAnchor.after( self.cache.$importArea );
+			self.cache.$formAnchor.after( $importArea );
 
 			$importButton.on( 'click', function() {
-				$importArea.toggle();
+				$( '#elementor-import-template-area' ).toggle();
 			} );
 		},
 

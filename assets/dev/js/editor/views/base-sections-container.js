@@ -1,5 +1,4 @@
 var SectionView = require( 'elementor-views/section' ),
-	Element = require( 'elementor-models/element' ),
 	BaseSectionsContainerView;
 
 BaseSectionsContainerView = Marionette.CompositeView.extend( {
@@ -15,9 +14,6 @@ BaseSectionsContainerView = Marionette.CompositeView.extend( {
 		},
 		HandleAdd: {
 			behaviorClass: require( 'elementor-behaviors/duplicate' )
-		},
-		HandleElementsRelation: {
-			behaviorClass: require( 'elementor-behaviors/elements-relation' )
 		}
 	},
 

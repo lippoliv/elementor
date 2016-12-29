@@ -1,4 +1,4 @@
-var BackgroundVideo = function( $, $backgroundVideoContainer ) {
+var BackgroundVideo = function( $backgroundVideoContainer, $ ) {
 	var player,
 		elements = {},
 		isYTVideo = false;
@@ -80,29 +80,34 @@ var BackgroundVideo = function( $, $backgroundVideoContainer ) {
 	init();
 };
 
-var StretchedSection = function( $, $section ) {
+var StretchedSection = function( $section, $ ) {
 	var elements = {},
 		settings = {};
 
 	var stretchSection = function() {
 		// Clear any previously existing css associated with this script
-		$section.css( {
-			'width': 'auto',
-			'left': '0'
-		} );
+		var direction = settings.is_rtl ? 'right' : 'left',
+			resetCss = {
+				width: 'auto'
+			};
+
+		resetCss[ direction ] = 0;
+
+		$section.css( resetCss );
 
 		if ( ! $section.hasClass( 'elementor-section-stretched' ) ) {
 			return;
 		}
 
-		var sectionWidth = elements.$scopeWindow.width(),
+		var containerWidth = elements.$scopeWindow.outerWidth(),
+			sectionWidth = $section.outerWidth(),
 			sectionOffset = $section.offset().left,
 			correctOffset = sectionOffset;
 
-		if ( elements.$sectionContainer.length ) {
+        if ( elements.$sectionContainer.length ) {
 			var containerOffset = elements.$sectionContainer.offset().left;
 
-			sectionWidth = elements.$sectionContainer.outerWidth();
+			containerWidth = elements.$sectionContainer.outerWidth();
 
 			if ( sectionOffset > containerOffset ) {
 				correctOffset = sectionOffset - containerOffset;
@@ -111,14 +116,15 @@ var StretchedSection = function( $, $section ) {
 			}
 		}
 
-		if ( ! settings.is_rtl ) {
-			correctOffset = -correctOffset;
+		if ( settings.is_rtl ) {
+			correctOffset = containerWidth - ( sectionWidth + correctOffset );
 		}
 
-		$section.css( {
-			'width': sectionWidth + 'px',
-			'left': correctOffset + 'px'
-		} );
+		resetCss.width = containerWidth + 'px';
+
+		resetCss[ direction ] = -correctOffset + 'px';
+
+		$section.css( resetCss );
 	};
 
 	var initSettings = function() {
@@ -133,7 +139,7 @@ var StretchedSection = function( $, $section ) {
 	};
 
 	var bindEvents = function() {
-		elements.$scopeWindow.on( 'resize', stretchSection );
+		elementorFrontend.elementsHandler.addExternalListener( $section, 'resize', stretchSection );
 	};
 
 	var init = function() {
@@ -146,12 +152,12 @@ var StretchedSection = function( $, $section ) {
 	init();
 };
 
-module.exports = function( $ ) {
-	new StretchedSection( $, this );
+module.exports = function( $scope, $ ) {
+	new StretchedSection( $scope, $ );
 
-	var $backgroundVideoContainer = this.find( '.elementor-background-video-container' );
+	var $backgroundVideoContainer = $scope.find( '.elementor-background-video-container' );
 
 	if ( $backgroundVideoContainer ) {
-		new BackgroundVideo( $, $backgroundVideoContainer );
+		new BackgroundVideo( $backgroundVideoContainer, $ );
 	}
 };

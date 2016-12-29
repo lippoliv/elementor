@@ -39,6 +39,7 @@ module.exports = function( grunt ) {
 				files: [ {
 					src: [
 						'**/*.php',
+						'!docs/**',
 						'!node_modules/**',
 						'!build/**',
 						'!tests/**',
@@ -47,18 +48,6 @@ module.exports = function( grunt ) {
 						'!*~'
 					],
 					expand: true
-				} ]
-			}
-		},
-
-		sass: {
-			dist: {
-				files: [ {
-					expand: true,
-					cwd: 'assets/dev/scss/direction',
-					src: '*.scss',
-					dest: 'assets/css',
-					ext: '.css'
 				} ]
 			}
 		},
@@ -201,6 +190,21 @@ module.exports = function( grunt ) {
 			]
 		},
 
+		sass: {
+			options: {
+				sourceMap: true
+			},
+			dist: {
+				files: [ {
+					expand: true,
+					cwd: 'assets/dev/scss/direction',
+					src: '*.scss',
+					dest: 'assets/css',
+					ext: '.css'
+				} ]
+			}
+		},
+
 		postcss: {
 			dev: {
 				options: {
@@ -329,6 +333,7 @@ module.exports = function( grunt ) {
 				src: [
 					'**',
 					'!node_modules/**',
+					'!docs/**',
 					'!build/**',
 					'!bin/**',
 					'!.git/**',

@@ -1,9 +1,9 @@
 === Elementor Page Builder ===
 Contributors: pojo.me, KingYes, ariel.k, jzaltzberg, yehudah, mati1000, pojosh
-Tags: page builder, editor, builder, visual editor, front-end editor, design, drag and drop builder, front-end builder, landing page, page builder plugin, site builder, template builder, visual builder, website builder, wysiwyg
+Tags: page builder, editor, elementor, builder, visual editor, front-end editor, design, drag and drop builder, front-end builder, landing page, page builder plugin, site builder, template builder, visual builder, website builder, wysiwyg
 Requires at least: 4.4
-Tested up to: 4.6
-Stable tag: 0.10.6
+Tested up to: 4.7
+Stable tag: 1.0.9
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -69,19 +69,21 @@ We packed 28 of the most useful widgets into Elementor. True, that's way more th
 We've integrated RTL and multi language support within the framework of Elementor, so you get a translated panel out of the box, as well as RTL typography support, and developer options to add even more languages.
 
 = Translations =
+- [French](https://translate.wordpress.org/locale/fr/default/wp-plugins/elementor) - (fr_FR)
 - [German](https://translate.wordpress.org/locale/de/default/wp-plugins/elementor) - (de_DE)
+- [Italian](https://translate.wordpress.org/locale/it/default/wp-plugins/elementor) - (it_IT)
 - [Spanish (Spain)](https://translate.wordpress.org/locale/es/default/wp-plugins/elementor) - (es_ES)
+- [Spanish (Mexico)](https://translate.wordpress.org/locale/es-mx/default/wp-plugins/elementor) - (es_MX)
 - [Japanese](https://translate.wordpress.org/locale/ja/default/wp-plugins/elementor) - (ja)
-- [Portuguese (Portugal)](https://translate.wordpress.org/locale/pt-br/default/wp-plugins/elementor) - (pt_PT)
+- [Portuguese (Portugal)](https://translate.wordpress.org/locale/pt/default/wp-plugins/elementor) - (pt_PT)
 - [Portuguese (Brazil)](https://translate.wordpress.org/locale/pt-br/default/wp-plugins/elementor) - (pt_BR)
 - [Swedish](https://translate.wordpress.org/locale/he/default/wp-plugins/elementor) - (sv_SE)
 - [Polish](https://translate.wordpress.org/locale/pl/default/wp-plugins/elementor) - (pl_PL)
 - [Persian](https://translate.wordpress.org/locale/fa/default/wp-plugins/elementor) - (fa_IR)
-- [Romanian](https://translate.wordpress.org/locale/ro/default/wp-plugins/elementor) - (ro_RO)
 - [Hebrew](https://translate.wordpress.org/locale/he/default/wp-plugins/elementor) - (he_IL)
-- [French](https://translate.wordpress.org/locale/fr/default/wp-plugins/elementor) - (fr_FR) - in progress
-- [Italian](https://translate.wordpress.org/locale/it/default/wp-plugins/elementor) - (it_IT) - in progress
-- [Arabic](https://translate.wordpress.org/locale/fr/default/wp-plugins/elementor) - (ar) - in progress
+- [Romanian](https://translate.wordpress.org/locale/ro/default/wp-plugins/elementor) - (ro_RO) - in progress
+- [Arabic](https://translate.wordpress.org/locale/ar/default/wp-plugins/elementor) - (ar) - in progress
+- [Hungarian](https://translate.wordpress.org/locale/hu/default/wp-plugins/elementor) - (hu_HU) - in progress
 
 = Be a contributor =
 If you want to contribute, go to our [Elementor GitHub Repository](https://github.com/pojome/elementor) and see where you can help.
@@ -159,6 +161,105 @@ No. Elementor supports WordPress 4.4 or greater, and is compatible with PHP 5.4 
 
 == Changelog ==
 
+= 1.0.9 - 27.12.2016 =
+* Fix! - Elementor library import remote template
+
+= 1.0.8 - 27.12.2016 =
+* Tweak! - Added raw css support for stylesheet class ([#1086](https://github.com/pojome/elementor/issues/1086))
+* Tweak! - Improve memory used in the editor mode ([Topic](https://wordpress.org/support/topic/need-update-folks/))
+* Fix! - Issue with post-css-file in HTTPS ([#1077](https://github.com/pojome/elementor/issues/1077))
+
+= 1.0.7 - 25.12.2016 =
+* Fix! - Validate export import for elementor template
+* Fix! - Excluded `elementor_library` custom post type from the sitemap by Yoast SEO
+* Fix! - Prevent Scroll BUG in Google Map widget
+* Fix! - Added unique name for repeater control
+
+= 1.0.6 - 20.12.2016 =
+* New! - Added social icons for Apple & Spotify
+* New! - Added Thousand Separator control for counter widget
+* Tweak! - Added Filter template types in library backend
+* Tweak! - Updated jQuery Numerator Plugin v0.2.1
+* Fix! - Added support for floating numbers in counter widget
+* Fix! - Removed limit from counter widget
+* Deprecated! - Removed `#elementor-section-wrap` ID from frontend output
+* Deprecated! - Removed `#elementor-inner` ID from frontend output
+
+= 1.0.5 - 18.12.2016 =
+* Tweak! - Added VH unit in min-height control for section
+* Fix! - Bug with section-content-position in Columns widget
+* Fix! - Bug with stretched section
+* Fix! - Avoid fatal error for invalid widgets
+* Deprecated! - Removed `#elementor` ID from frontend output
+
+= 1.0.4 - 12.12.2016 =
+* Tweak! - Added mobile editing options for social icons widget
+* Fix! - Icon alignment CSS issue (Icon and Icon-Box widget) 
+* Fix! - Conflict panel with Safari browser
+* Fix! - Responsive grid bug with tablet screen
+
+= 1.0.3 - 11.12.2016 =
+* New! - Ready for Elementor Pro
+* Tweak! - Added template type validation
+* Fix! - Select2 control fix empty state
+
+= 1.0.2 - 08.12.2016 =
+* Fix! - Adjusting Text Editor widget when visual editor is disabled ([Topic](https://wordpress.org/support/topic/text-editing-menu-is-blank/))
+* Fix! - Conflict with Advanced TinyMCE plugin ([Topic](https://wordpress.org/support/topic/1-0-1-disabled-the-text-edit-widget/))
+
+= 1.0.1 - 08.12.2016 =
+* Fix! - Waypoint script for multiple versions ([#933](https://github.com/pojome/elementor/issues/933), [#1001](https://github.com/pojome/elementor/issues/1001))
+* Fix! - Text Editor widget compatible for WordPress 4.7
+* Fix! - Label form compatible for TwentySeventy theme
+
+= 1.0.0 - 06.12.2016 =
+* New! - Added code editor for HTML widget
+* New! - Added social icon for Houzz
+* New! - Added Code control base on ACE
+* New! - Added Tabs control for editor panel
+* New! - Forms style for future widgets
+* Tweak! - Update Waypoints library to v4.0.1
+* Tweak! - Added support for multiple icon fonts in Choose control
+* Fix! - Progress Bar "glitch" on page refresh ([#909](https://github.com/pojome/elementor/issues/909))
+* Fix! - post-css-file don't enqueue if isn't elementor post ([#902](https://github.com/pojome/elementor/issues/902))
+* Fix! - Columns widget not render on search ([#862](https://github.com/pojome/elementor/issues/862))
+* Fix! - Conflict with Bootstrap 3 Shortcodes plugin ([#924](https://github.com/pojome/elementor/issues/924))
+* Fix! - Don't generate or enqueue CSS file if post not built with elementor
+* Fix! - Icon button RTL bug in tools page
+* Fix! - Color Picker control bug on FireFox
+* Fix! - Video background for section works again
+* Fix! - Draggable line for columns widget
+
+= 0.11.2 - 21.11.2016 =
+* Fix! - Don't Generate CSS if it's not build with Elementor
+* Fix! - Global font goes wrong after changing weight ([#888](https://github.com/pojome/elementor/issues/888))
+
+= 0.11.1 - 17.11.2016 =
+* Fix! - Columns widget bug with edit options
+* Tweak! - Changed breakpoint for tablet from 1023px to 1024px ([#860](https://github.com/pojome/elementor/issues/860))
+
+= 0.11.0 - 16.11.2016 =
+* New! - Elementor now generates an external CSS file for each page instead of inline CSS ([#325](https://github.com/pojome/elementor/issues/325))
+* New! - Added a tool to regenerate Elementor pages CSS files
+* New! - Added TinyMCE editor for Repeater control, such as Tabs, Accordion and Toggle widgets ([#176](https://github.com/pojome/elementor/issues/176))
+* New! - Added Time Picker control for future widgets
+* Tweak! - 'Edit with Elementor' button color now uses the Admin Color Scheme
+* Tweak! - Improved style for Multiple Select2 control
+* Tweak! - Removed development mode flag
+* Tweak! - Elementor Icon library updated with new icons
+* Tweak! - Align button sizes as a new forms style
+* Tweak! - Panel width expanded for better comfortable editing
+* Tweak! - TinyMCE editor toolbar reduced to basic toolbar, for comfortable editing
+
+= 0.10.7 - 07.11.2016 =
+* Fix! - Image widget template for link and caption ([Topic](https://wordpress.org/support/topic/image-not-aligning-when-linked/))
+* Fix! - Exclude Library from search ([Topic](https://wordpress.org/support/topic/custom-templates-accidentally-show-up-in-search-results/))
+* Fix! - HTML of text widget not being parsed in the preview ([Topic](https://wordpress.org/support/topic/html-of-text-widget-not-being-parsed-in-the-preview/))
+* Fix! - Add new section button in RTL
+* Fix! - Stretched section in RTL
+* Fix! - TinyMCE editor buttons in RTL
+* Fix! - Error messages for template library
+
 = 0.10.6 - 02.11.2016 =
 * Fix! - Some breaks layouts from previous release
 
@@ -169,18 +270,18 @@ No. Elementor supports WordPress 4.4 or greater, and is compatible with PHP 5.4 
 * Tweak! - Added Compatibility for themes by Bluchic
 * Tweak! - Added Compatibility for jQuery Masonry Image Gallery plugin ([#762](https://github.com/pojome/elementor/issues/762))
 * Tweak! - Added support for "multiple value" condition in Repeater control
-* Fixed! - Bug corrupting JSON post meta on import Elementor pages ([Topic](https://wordpress.org/support/topic/pages-importexport-not-working-properly/))
-* Fixed! - `.elementor-slick-slider` class now apply on all Elementor custom slick theme ([#424](https://github.com/pojome/elementor/issues/424))
-* Fixed! - Added subset support for Google Fonts to fix issues with some browsers
+* Fix! - Bug corrupting JSON post meta on import Elementor pages ([Topic](https://wordpress.org/support/topic/pages-importexport-not-working-properly/))
+* Fix! - `.elementor-slick-slider` class now apply on all Elementor custom slick theme ([#424](https://github.com/pojome/elementor/issues/424))
+* Fix! - Added subset support for Google Fonts to fix issues with some browsers
 
 = 0.10.4 - 26.10.2016 =
 * Tweak! - Updated Font Awesome v4.7.0 (41+ icons)
 * Tweak! - Added type attribute for text input control
 * Tweak! - Improved import template from library
 * Tweak! - Removed admin email from system info copied
-* Fixed! - Columns overlay layer for negative top margin scenario
-* Fixed! - Added i18n strings to Delete All Content dialog
-* Fixed! - Target blank link in heading widget - ([Topic](https://wordpress.org/support/topic/open-link-in-new-tab-doesnt-work/))
+* Fix! - Columns overlay layer for negative top margin scenario
+* Fix! - Added i18n strings to Delete All Content dialog
+* Fix! - Target blank link in heading widget - ([Topic](https://wordpress.org/support/topic/open-link-in-new-tab-doesnt-work/))
 
 = 0.10.3 - 13.10.2016 =
 * Fix! - Hover animation classes for Image widget ([Topic](https://wordpress.org/support/topic/update-issue-animation/), [Topic](https://wordpress.org/support/topic/hover-animation-2/))

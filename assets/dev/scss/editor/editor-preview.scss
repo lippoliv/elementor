@@ -16,7 +16,7 @@ html.elementor-html {
 }
 
 .elementor-editor-active {
-	#elementor {
+	.elementor.elementor-edit-mode {
 
 		.elementor-element-empty {
 
@@ -472,7 +472,7 @@ html.elementor-html {
 		}
 	}
 
-	#elementor-inner {
+	.elementor-inner {
 
 		// Force keeping in top for blank page detection
 		&:before {
@@ -505,7 +505,7 @@ html.elementor-html {
 			transition: all .1s;
 		}
 
-		&.elementor-element-editable, &:hover {
+		&.elementor-element-editable, &.elementor-widget-can-edit:hover {
 			outline: 1px solid $editor-info;
 		}
 
@@ -588,8 +588,11 @@ html.elementor-html {
 
 	.elementor-draggable-over[data-dragged-element="section"][data-dragged-is-inner="true"] {
 
-		.elementor-sortable-placeholder {
-			display: none;
+		.elementor-inner-column {
+
+			.elementor-sortable-placeholder {
+				display: none;
+			}
 		}
 	}
 
@@ -655,7 +658,7 @@ html.elementor-html {
 
 	#elementor-add-template-button {
 		background-color: $editor-dark;
-		margin-left: 25px;
+		@include margin-start(25px);
 	}
 
 	#elementor-add-section-drag-title {

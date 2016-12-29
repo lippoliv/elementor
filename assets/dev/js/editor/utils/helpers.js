@@ -105,7 +105,7 @@ helpers = {
 		} );
 	},
 
-	isControlVisible: function( controlModel, elementSettingsModel ) {
+	isControlVisible: function( controlModel, values ) {
 		var condition;
 
 		// TODO: Better way to get this?
@@ -113,6 +113,11 @@ helpers = {
 			condition = controlModel.get( 'condition' );
 		} else {
 			condition = controlModel.condition;
+		}
+
+		// Repeater items conditions
+		if ( controlModel.conditions ) {
+			return elementor.conditions.check( controlModel.conditions, values );
 		}
 
 		if ( _.isEmpty( condition ) ) {
@@ -124,13 +129,15 @@ helpers = {
 				conditionRealName = conditionNameParts[1],
 				conditionSubKey = conditionNameParts[2],
 				isNegativeCondition = !! conditionNameParts[3],
-				controlValue = elementSettingsModel.get( conditionRealName );
+				controlValue = values[ conditionRealName ];
 
 			if ( conditionSubKey ) {
 				controlValue = controlValue[ conditionSubKey ];
 			}
 
-			var isContains = ( _.isArray( conditionValue ) ) ? _.contains( conditionValue, controlValue ) : conditionValue === controlValue;
+			// If it's a non empty array - check if the conditionValue contains the controlValue,
+			// otherwise check if they are equal. ( and give the ability to check if the value is an empty array )
+			var isContains = ( _.isArray( conditionValue ) && ! _.isEmpty( conditionValue ) ) ? _.contains( conditionValue, controlValue ) : _.isEqual( conditionValue, controlValue );
 
 			return isNegativeCondition ? isContains : ! isContains;
 		} );
@@ -188,6 +195,7 @@ helpers = {
 				return self.getColorPickerPaletteIndex( item.key );
 			} ),
 			defaultOptions = {
+				width: window.innerWidth >= 1440 ? 271 : 251,
 				palettes: _.pluck( items, 'value' )
 			};
 

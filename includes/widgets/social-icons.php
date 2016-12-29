@@ -14,7 +14,11 @@ class Widget_Social_Icons extends Widget_Base {
 	}
 
 	public function get_icon() {
-		return 'social-icons';
+		return 'eicon-social-icons';
+	}
+
+	public function get_categories() {
+		return [ 'general-elements' ];
 	}
 
 	protected function _register_controls() {
@@ -49,6 +53,7 @@ class Widget_Social_Icons extends Widget_Base {
 						'label_block' => true,
 						'default' => 'fa fa-wordpress',
 						'include' => [
+							'fa fa-apple',
 							'fa fa-behance',
 							'fa fa-bitbucket',
 							'fa fa-codepen',
@@ -60,6 +65,7 @@ class Widget_Social_Icons extends Widget_Base {
 							'fa fa-foursquare',
 							'fa fa-github',
 							'fa fa-google-plus',
+							'fa fa-houzz',
 							'fa fa-instagram',
 							'fa fa-jsfiddle',
 							'fa fa-linkedin',
@@ -69,6 +75,7 @@ class Widget_Social_Icons extends Widget_Base {
 							'fa fa-reddit',
 							'fa fa-snapchat',
 							'fa fa-soundcloud',
+							'fa fa-spotify',
 							'fa fa-stack-overflow',
 							'fa fa-tumblr',
 							'fa fa-twitch',
@@ -117,15 +124,15 @@ class Widget_Social_Icons extends Widget_Base {
 				'options' => [
 					'left'    => [
 						'title' => __( 'Left', 'elementor' ),
-						'icon' => 'align-left',
+						'icon' => 'fa fa-align-left',
 					],
 					'center' => [
 						'title' => __( 'Center', 'elementor' ),
-						'icon' => 'align-center',
+						'icon' => 'fa fa-align-center',
 					],
 					'right' => [
 						'title' => __( 'Right', 'elementor' ),
-						'icon' => 'align-right',
+						'icon' => 'fa fa-align-right',
 					],
 				],
 				'default' => 'center',
@@ -195,7 +202,7 @@ class Widget_Social_Icons extends Widget_Base {
 			]
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'icon_size',
 			[
 				'label' => __( 'Icon Size', 'elementor' ),
@@ -212,7 +219,7 @@ class Widget_Social_Icons extends Widget_Base {
 			]
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'icon_padding',
 			[
 				'label' => __( 'Icon Padding', 'elementor' ),
@@ -234,7 +241,7 @@ class Widget_Social_Icons extends Widget_Base {
 
 		$icon_spacing = is_rtl() ? 'margin-left: {{SIZE}}{{UNIT}};' : 'margin-right: {{SIZE}}{{UNIT}};';
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'icon_spacing',
 			[
 				'label' => __( 'Icon Spacing', 'elementor' ),
